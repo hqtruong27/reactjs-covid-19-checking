@@ -1,6 +1,4 @@
-# Checking - Coronavirus (COVID-19)
-
-## Available Scripts
+# Coronavirus (COVID-19)
 
 In the project directory, you can run:
 
@@ -37,7 +35,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## library
+## library use
 
 1. axios
 2. highcharts
@@ -47,4 +45,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 6. @material-ui/core
 
 ## Coronavirus COVID19 API
+
 https://documenter.getpostman.com/view/10808728/SzS8rjbc#7934d316-f751-4914-9909-39f1901caeb8
