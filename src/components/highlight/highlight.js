@@ -8,7 +8,7 @@ export const Highlight = ({ report }) => {
 
     const summary = [
         {
-            title: 'Number of cases of covid',
+            title: 'Total cases',
             total: data.Confirmed ?? 'NA',
             type: TYPE.CONFIRMED
         },
