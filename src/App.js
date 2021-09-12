@@ -16,7 +16,7 @@ function App() {
   const [report, setReport] = useState([])
 
   useEffect(() => {
-    setCurrentCountry({ Country: "Viet Nam", Slug: COUNTRIES.VN })
+    setCurrentCountry(COUNTRIES.VIE)
   }, [])
 
   useEffect(() => {
