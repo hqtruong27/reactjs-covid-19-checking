@@ -46,6 +46,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 7. autosuggest-highlight
 8. material-ui/lab
 
-## Coronavirus COVID19 API
-
-https://documenter.getpostman.com/view/10808728/SzS8rjbc#7934d316-f751-4914-9909-39f1901caeb8
+## Data from
+[JHU CSSE COVID-19 Data ](https://github.com/CSSEGISandData/COVID-19)
+[COVID 19 API][https://covid19api.com/]
+[covidtracking][https://covidtracking.com/data/api]
