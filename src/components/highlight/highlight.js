@@ -1,6 +1,6 @@
 import { Card, CardContent, Grid, Typography, makeStyles } from '@material-ui/core'
 import React from 'react'
-import { TYPE } from '../../global/constants'
+import { CONSTANTS } from '../../global/constants'
 
 
 export const Highlight = ({ report }) => {
@@ -9,18 +9,18 @@ export const Highlight = ({ report }) => {
     const summary = [
         {
             title: 'Total cases',
-            total: data.Confirmed ?? 'NA',
-            type: TYPE.CONFIRMED
+            total: data.Confirmed?.toLocaleString() ?? 'NA',
+            type: CONSTANTS.TYPE.CONFIRMED
         },
         {
             title: 'Recovered',
-            total: data.Recovered ?? 'NA',
-            type: TYPE.RECOVERED
+            total: data.Recovered?.toLocaleString() ?? 'NA',
+            type: CONSTANTS.TYPE.RECOVERED
         },
         {
             title: 'Deaths',
-            total: data.Deaths ?? 'NA',
-            type: TYPE.DEATHS
+            total: data.Deaths?.toLocaleString() ?? 'NA',
+            type: CONSTANTS.TYPE.DEATHS
         },
     ]
 
@@ -34,7 +34,6 @@ export const Highlight = ({ report }) => {
 }
 
 const HighlightCardContent = ({ type, title, total }) => {
-    console.log(type, title, total)
     const classes = styles({ type })
     return (
         <Grid item sm={4} xs={12} >
@@ -51,14 +50,14 @@ const HighlightCardContent = ({ type, title, total }) => {
 const styles = makeStyles({
     wrapper: ({ type }) => {
         switch (type) {
-            case TYPE.CONFIRMED:
+            case CONSTANTS.TYPE.CONFIRMED:
                 return { borderLeft: '6px solid #c9302c' }
-            case TYPE.RECOVERED:
-                return { borderLeft: '6px solid #927228' }
-            case TYPE.DEATHS:
-                return { borderLeft: '6px solid #333' }
+            case CONSTANTS.TYPE.RECOVERED:
+                return { borderLeft: '6px solid #38E555' }
+            case CONSTANTS.TYPE.DEATHS:
+                return { borderLeft: '6px solid #4A4A4A' }
             default:
-                return { borderLeft: '6px solid #c9302c' };
+                return { borderLeft: '6px solid #4A4A4A' };
         }
     },
     title: {
