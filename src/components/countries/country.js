@@ -1,19 +1,52 @@
-import { FormControl, FormHelperText, InputLabel, NativeSelect } from '@material-ui/core';
+import { TextField, CircularProgress } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import React from 'react'
 
-const Country = ({ value, onChange, data }) => {
-
+export const Country = ({ val, onChange, data, open, onOpen, onClose, loading }) => {
     return (
-        <FormControl>
-            <InputLabel htmlFor="country" shrink >Countries</InputLabel>
-            <NativeSelect value={value} onChange={onChange} inputProps={{ id: 'country', name: 'countries' }}>
-                {
-                    data.map((x) => <option key={x.ISO2} value={x.slug}>{x.Country}</option>)
-                }
-            </NativeSelect>
-            <FormHelperText>Choose your country</FormHelperText>
-        </FormControl>
+        <Autocomplete
+            style={{ width: 500, marginBottom: 30 }}
+            open={open}
+            onOpen={onOpen}
+            onClose={onClose}
+            options={data}
+            autoHighlight
+            onChange={onChange}
+            value={{ Country: val.Country }}
+            getOptionSelected={(option, value) => option.Country === value.Country}
+            loading={loading}
+            getOptionLabel={(option) => option.Country || ''}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label="Select your country"
+                    variant="outlined"
+                    InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                            <React.Fragment>
+                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                {params.InputProps.endAdornment}
+                            </React.Fragment>
+                        ),
+                    }}
+                />
+            )}
+            renderOption={(option, { inputValue }) => {
+                const matches = match(option.Country, inputValue);
+                const parts = parse(option.Country, matches);
+                return (
+                    <div>
+                        {parts.map((part, index) => (
+                            <span key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
+                                {part.text}
+                            </span>
+                        ))}
+                    </div>
+                )
+            }}
+        />
     )
 }
-
-export default Country;
