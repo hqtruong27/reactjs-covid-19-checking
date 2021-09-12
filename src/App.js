@@ -37,8 +37,8 @@ function App() {
     }
   }, [open]);
 
-  const onChange = (event, value) => {
-    setCurrentCountry({ Slug: value.Slug, Country: value.Country })
+  const onChange = (_, value) => {
+    setCurrentCountry({ Slug: value?.Slug, Country: value?.Country })
   }
 
   useEffect(() => {
@@ -60,7 +60,7 @@ function App() {
         onChange={onChange}
         val={country} />
       <Highlight report={report} />
-      <Summary report={report} />
+      <Summary data={report} />
     </>
   );
 }

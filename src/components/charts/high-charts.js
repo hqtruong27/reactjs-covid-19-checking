@@ -1,65 +1,79 @@
 import HighchartsReact from 'highcharts-react-official'
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Highchart from 'highcharts'
+import moment from 'moment'
+import _ from 'lodash'
+
 
 //Run when data HighChart changes
-const generateOptions = (data) => {
-    const categories = []
+const generateOptions = (data, country) => {
+    const result = _(data)
+        .groupBy(x => moment(x.Date).format('MM/YYYY'))
+        .map((value, key) => ({ key: key, data: value, Confirmed: value[value.length - 1].Confirmed })).value()
+        .sort(() => { const ASC = 1; return ASC })
+    console.log(result);
     return {
-        Chart: {
-            height: 500,
+        chart: {
+            height: 550,
         },
         title: {
-            text: 'Total'
+            text: `<h1 style='font-size:27px'>Cases</h1><br/><br/><span style='color:#545454'>${country}</span>`,
+            align: 'left'
         },
+        // subtitle: {
+        //     text: '1234<br/>3456',
+        // },
         xAxis: {
-            categories: categories,
-            crosshair: true
+            categories: result.map(({ key }) => key),
+            crosshair: true,
+            // title: {
+            //     text: 'Total'
+            // }
         },
-        colors: ['#CBA4E4'],
+        colors: ['#F3585B'],
         yAxis: {
             min: 0,
             title: {
-                text: null
+                text: 'Total cases'
             },
-            // labels: {
-            //     align: 'right'
-            // }
-            tooltip: {
-                headerFormat: '<span style="" ></span><table>',
-                bodyFormat: '<tr><td>{1}</td><td>{2}</td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true,
+            labels: {
+                align: 'right'
             },
-            plotOptions: {
-                columns: {
-                    pointPadding: 0.2,
-                    borderWidth: 0.1
-                }
-            },
-            series: [
-                {
-                    name: 'Total: ',
-                    data: data.map((x) => x)
-                }
-            ]
-        }
 
+        },
+        tooltip: {
+            headerFormat: '<span style="" ></span><table>',
+            bodyFormat: '<tr><td>{1}</td><td>{2}</td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true,
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0,
+            },
+        },
+        series: [
+            {
+                name: 'Total: ',
+                data: result.map(({ Confirmed }) => Confirmed)
+            }
+        ]
     }
 }
 
-function HighChart({ data }) {
+const HighChart = ({ data }) => {
     const [options, setOptions] = useState({})
 
     useEffect(() => {
-        setOptions(generateOptions(data))
-
-    }, data)
+        const country = data[data.length - 1]?.Country ?? ''
+        setOptions(generateOptions(data, country))
+    }, [data])
 
     return (
         <div>
-            <HighchartsReact highcharts={Highchart} options={generateOptions} />
+            <HighchartsReact highcharts={Highchart} options={options} />
         </div>
     )
 }
