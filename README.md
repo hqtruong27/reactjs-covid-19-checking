@@ -43,6 +43,8 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 4. moment
 5. @highcharts/map-collection
 6. @material-ui/core
+7. autosuggest-highlight
+8. material-ui/lab
 
 ## Coronavirus COVID19 API
 
