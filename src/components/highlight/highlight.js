@@ -2,24 +2,23 @@ import { Card, CardContent, Grid, Typography, makeStyles } from '@material-ui/co
 import React from 'react'
 import { CONSTANTS } from '../../global/constants'
 
-
-export const Highlight = ({ report }) => {
-    const data = report[report.length - 1] ?? []
+export const Highlight = ({ sum }) => {
+    const data = sum[sum.length - 1] ?? []
 
     const summary = [
         {
             title: 'Total cases',
-            total: data.Confirmed?.toLocaleString() ?? 'NA',
+            total: data?.TotalCases?.toLocaleString() ?? 'NA',
             type: CONSTANTS.TYPE.CONFIRMED
         },
         {
             title: 'Recovered',
-            total: data.Recovered?.toLocaleString() ?? 'NA',
+            total: data?.Recovered?.toLocaleString() ?? 'NA',
             type: CONSTANTS.TYPE.RECOVERED
         },
         {
             title: 'Deaths',
-            total: data.Deaths?.toLocaleString() ?? 'NA',
+            total: data?.TotalDeaths?.toLocaleString() ?? 'NA',
             type: CONSTANTS.TYPE.DEATHS
         },
     ]
