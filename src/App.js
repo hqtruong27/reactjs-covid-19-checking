@@ -9,11 +9,10 @@ function App() {
 
   const [open, setOpen] = useState(false);
   const [countries, setCountries] = useState([])
+  const [country, setCurrentCountry] = useState({ Country: null, Slug: null })
+  const [report, setReport] = useState([])
 
   const loading = open && countries.length === 0
-  const [country, setCurrentCountry] = useState({ Country: null, Slug: null })
-
-  const [report, setReport] = useState([])
 
   useEffect(() => {
     setCurrentCountry(COUNTRIES.VIE)
@@ -23,7 +22,7 @@ function App() {
     if (!loading) return
 
     setTimeout(() => {
-      CoronaAPI.getCountries().then((res) => {
+      CoronaAPI.countries().then((res) => {
         setCountries(res.data)
       }).catch((err) => console.log(err))
     }, 1e3)
@@ -43,9 +42,10 @@ function App() {
 
   useEffect(() => {
     if (country?.Slug) {
-      CoronaAPI.getReportByCountry(country.Slug).then((res) => {
+      CoronaAPI.getReportPremiumByCountry(country.Slug).then((res) => {
         setReport(res.data)
       }).catch((err) => console.error(err))
+
     }
   }, [country])
 
@@ -59,7 +59,7 @@ function App() {
         loading={loading}
         onChange={onChange}
         val={country} />
-      <Highlight report={report} />
+      <Highlight sum={report} />
       <Summary data={report} />
     </>
   );
