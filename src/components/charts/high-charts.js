@@ -22,16 +22,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 //Run when data HighChart changes
-const generateOptions = (data, country) => {
-
-    const result = _(data)
-        .groupBy(x => moment(x.Date).format('MM/YYYY'))
-        .map((value, key) => ({
-            key: key,
-            data: value, NewCases: _(value).sumBy(x => x.NewCases)
-        }))
-        .value().sort(() => { const ASC = 1; return ASC })
-
+const generateOptions = (type, data, country) => {
+    const { result, categories, typeChart } = generateDataByType(type, data)
     return {
         chart: {
             height: 550,
@@ -48,7 +40,7 @@ const generateOptions = (data, country) => {
         //     text: '1234<br/>3456',
         // },
         xAxis: {
-            categories: result.map(({ key }) => key),
+            categories: categories,
             crosshair: true,
             minColor: '#FFFFFF',
             maxColor: '#000000',
@@ -89,8 +81,8 @@ const generateOptions = (data, country) => {
         series: [
             {
                 name: 'New Cases: ',
-                type: 'area',
-                data: result.map(({ NewCases }) => NewCases)
+                type: typeChart,
+                data: result?.map(({ NewCases }) => NewCases)
             }
         ],
         credits: {
@@ -98,14 +90,59 @@ const generateOptions = (data, country) => {
         }
     }
 }
+const generateDataByType = (type = 'ALL', data) => {
+    let result, categories, typeChart
+    switch (type) {
+        case "ALL":
+            result = _(data)
+                .groupBy(x => moment(x.Date).format('MM/YYYY'))
+                .map((value, key) => ({
+                    key: key,
+                    data: value, NewCases: _(value).sumBy(x => x.NewCases)
+                }))
+                .value().sort(() => { const ASC = 1; return ASC })
+            categories = result.map(({ key }) => key)
+            typeChart = 'area'
+            break
+        case "7":
+            result = data.map(item => ({
+                Date: moment(item.Date).format('DD/MM/YYYY'),
+                NewCases: item.NewCases
+            })).sort(() => { const ASC = 1; return ASC })
+            categories = result.map(({ Date }) => Date)
+            typeChart = 'column'
+            break
+        case "14":
+            result = data.map(item => ({
+                Date: moment(item.Date).format('DD/MM/YYYY'),
+                NewCases: item.NewCases
+            })).sort(() => { const ASC = 1; return ASC })
+            categories = result.map(({ Date }) => Date)
+            typeChart = 'column'
+            break
+        case "30":
+            result = data.map(item => ({
+                Date: moment(item.Date).format('DD/MM/YYYY'),
+                NewCases: item.NewCases
+            })).sort(() => { const ASC = 1; return ASC })
+            categories = result.map(({ Date }) => Date)
+            typeChart = 'column'
+            break
+        default:
+            break
+
+    }
+
+    return { result, categories, typeChart }
+}
 
 const HighChart = ({ onChange, data }) => {
-    const [options, setOptions] = useState({})
 
+    const [options, setOptions] = useState({})
 
     useEffect(() => {
         const country = data[data.length - 1]?.Country ?? ''
-        setOptions(generateOptions(data, country))
+        setOptions(generateOptions(data.type, data.data, country))
     }, [data])
 
     const classes = useStyles()
@@ -113,14 +150,12 @@ const HighChart = ({ onChange, data }) => {
         <div>
             <FormControl className={classes.filter}>
                 <NativeSelect
-                    name="age"
                     onChange={onChange}
-                    className={classes.selector}
-                >
-                    <option value="0001-01-01" >All time</option>
-                    <option value={moment().subtract(7, 'days').format('YYYY-MM-DD')}>Last 7 Days</option>
-                    <option value={moment().subtract(14, 'days').format('YYYY-MM-DD')}>Last 14 Days</option>
-                    <option value={moment().subtract(30, 'days').format('YYYY-MM-DD')}>Last 30 Days</option>
+                    className={classes.selector}>
+                    <option value="ALL" >All time</option>
+                    <option value={7}>Last 7 Days</option>
+                    <option value={14}>Last 14 Days</option>
+                    <option value={30}>Last 30 Days</option>
                 </NativeSelect>
             </FormControl>
             <HighchartsReact highcharts={Highchart} options={options} />
