@@ -49,5 +49,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ## Data from
 [JHU CSSE COVID-19 Data ](https://github.com/CSSEGISandData/COVID-19)
+
 [COVID 19 API](https://covid19api.com/)
+
 [covidtracking](https://covidtracking.com/data/api)
