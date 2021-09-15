@@ -9,13 +9,13 @@ function App() {
 
   const [open, setOpen] = useState(false);
   const [countries, setCountries] = useState([])
-  const [country, setCurrentCountry] = useState({ Country: null, Slug: null })
+  const [params, setParams] = useState({ Country: null, Slug: null })
   const [report, setReport] = useState([])
 
   const loading = open && countries.length === 0
 
   useEffect(() => {
-    setCurrentCountry(COUNTRIES.VIE)
+    setParams(COUNTRIES.VIE)
   }, [])
 
   useEffect(() => {
@@ -36,18 +36,23 @@ function App() {
     }
   }, [open]);
 
-  const onChange = (_, value) => {
-    setCurrentCountry({ Slug: value?.Slug, Country: value?.Country })
+  const handleChangeCountry = (_, value) => {
+    setParams({ Slug: value?.Slug, Country: value?.Country })
+  }
+
+  const handleChangeSummary = (event) => {
+    setParams({ Slug: params?.Slug, Country: params?.Country, query: event.target.value })
   }
 
   useEffect(() => {
-    if (country?.Slug) {
-      CoronaAPI.getReportPremiumByCountry(country.Slug).then((res) => {
+    console.log(params)
+    if (params?.Slug) {
+      CoronaAPI.getReportPremiumByCountry(params.Slug, params.query).then((res) => {
         setReport(res.data)
       }).catch((err) => console.error(err))
 
     }
-  }, [country])
+  }, [params])
 
   return (
     <>
@@ -57,10 +62,10 @@ function App() {
         onClose={() => setOpen(false)}
         data={countries}
         loading={loading}
-        onChange={onChange}
-        val={country} />
+        onChange={handleChangeCountry}
+        val={params} />
       <Highlight sum={report} />
-      <Summary data={report} />
+      <Summary onChange={handleChangeSummary} data={report} />
     </>
   );
 }
