@@ -38,21 +38,11 @@ const CoronaAPI = {
      * @returns
      */
     getReportPremiumByCountry: (country, from, to) => {
-
         config.headers['X-Access-Token'] = '2f0d9db1-1d6c-4813-ac99-c19a8b6aedab'
+
         let url = `/premium/country/${country}`
-
-        if (from) {
-            url += `?from=${from}`
-            if (to) {
-                url += `&to=${to}`
-            } else {
-                url += `&to=${moment().subtract(1, 'days').format('YYYY-MM-DD')}`
-            }
-
-        } else {
-            if (to) url += `?to=${to}`
-        }
+            + (from ? `?from=${moment().subtract((parseInt(from) + 1), 'days').format('YYYY-MM-DD')}` + (to ? `&to=${to}`
+                : `&to=${moment().subtract(1, 'days').format('YYYY-MM-DD')}`) : (to ? `?to=${to}` : ''))
 
         return axios.get(url, config)
     }
