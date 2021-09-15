@@ -24,11 +24,9 @@ export const Highlight = ({ sum }) => {
     ]
 
     return (
-        <div>
-            <Grid container spacing={3}>
-                {summary.map(item => <HighlightCardContent key={item.type} type={item.type} title={item.title} total={item.total} />)}
-            </Grid>
-        </div>
+        <Grid container spacing={3}>
+            {summary.map(item => <HighlightCardContent key={item.type} type={item.type} title={item.title} total={item.total} />)}
+        </Grid>
     )
 }
 
