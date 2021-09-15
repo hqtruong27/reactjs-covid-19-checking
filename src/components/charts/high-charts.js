@@ -3,30 +3,23 @@ import React, { useEffect, useState } from 'react'
 import Highchart from 'highcharts'
 import moment from 'moment'
 import _ from 'lodash'
-// CaseFatalityRatio: 2.4909720807010394
-// Continent: "Asia"
-// Country: "Vietnam"
-// CountryISO: "VN"
-// DailyIncidenceConfirmedCases: 14600.714285714286
-// DailyIncidenceConfirmedCasesPerMillion: 148.7305714285714
-// DailyIncidenceConfirmedDeaths: 355.14285714285717
-// DailyIncidenceConfirmedDeathsPerMillion: 3.6175714285714284
-// Date: "2021-09-12T00:00:00Z"
-// ID: "984ecfd1-8ad3-4d7d-99b8-63ab7b2c409a"
-// IncidenceRiskConfirmedPerHundredThousand: 624.8165
-// IncidenceRiskDeathsPerHundredThousand: 15.563999999999998
-// IncidenceRiskNewConfirmedPerHundredThousand: 12.2503
-// IncidenceRiskNewDeathsPerHundredThousand: 0.26589999999999997
-// NewCases: 12026
-// NewCasesPerMillion: 122.503
-// NewDeaths: 261
-// NewDeathsPerMillion: 2.659
-// StringencyIndex: 0
-// TotalCases: 613375
-// TotalCasesPerMillion: 6248.165
-// TotalDeaths: 15279
-// TotalDeathsPerMillion: 155.64
+import { FormControl, makeStyles, NativeSelect } from '@material-ui/core'
 
+const useStyles = makeStyles((theme) => ({
+    filter: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        margin: theme.spacing(2),
+        '@media(min-width: 780px)': {
+            flexFlow: 'row',
+        },
+    },
+    selector: {
+        '@media(min-width: 780px)': {
+            width: 136
+        },
+    }
+}));
 
 //Run when data HighChart changes
 const generateOptions = (data, country) => {
@@ -42,10 +35,13 @@ const generateOptions = (data, country) => {
     return {
         chart: {
             height: 550,
-            type:'area'
+            borderColor: '#dadce0',
+            borderWidth: 1,
+            borderRadius: 8,
         },
         title: {
-            text: `<h1 style='font-size:27px'>Cases</h1><br/><br/><span style='color:#545454'>${country}</span>`,
+            y: 20,
+            text: `<h1 style='font-size:27px;margin-top:10px'>Cases</h1><br/><br/><span style='color:#545454'>${country}</span>`,
             align: 'left'
         },
         // subtitle: {
@@ -93,24 +89,42 @@ const generateOptions = (data, country) => {
         series: [
             {
                 name: 'New Cases: ',
+                type: 'area',
                 data: result.map(({ NewCases }) => NewCases)
             }
-        ]
+        ],
+        credits: {
+            enabled: false
+        }
     }
 }
 
-const HighChart = ({ data }) => {
+const HighChart = ({ onChange, data }) => {
     const [options, setOptions] = useState({})
+
 
     useEffect(() => {
         const country = data[data.length - 1]?.Country ?? ''
         setOptions(generateOptions(data, country))
     }, [data])
 
+    const classes = useStyles()
     return (
         <div>
+            <FormControl className={classes.filter}>
+                <NativeSelect
+                    name="age"
+                    onChange={onChange}
+                    className={classes.selector}
+                >
+                    <option value="0001-01-01" >All time</option>
+                    <option value={moment().subtract(7, 'days').format('YYYY-MM-DD')}>Last 7 Days</option>
+                    <option value={moment().subtract(14, 'days').format('YYYY-MM-DD')}>Last 14 Days</option>
+                    <option value={moment().subtract(30, 'days').format('YYYY-MM-DD')}>Last 30 Days</option>
+                </NativeSelect>
+            </FormControl>
             <HighchartsReact highcharts={Highchart} options={options} />
-        </div>
+        </div >
     )
 }
 
