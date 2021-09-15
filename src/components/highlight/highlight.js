@@ -1,24 +1,27 @@
 import { Card, CardContent, Grid, Typography, makeStyles } from '@material-ui/core'
 import React from 'react'
 import { CONSTANTS } from '../../global/constants'
+import _ from 'lodash'
 
 export const Highlight = ({ sum }) => {
-    const data = sum[sum.length - 1] ?? []
+    const TOTAL_CASES = sum ? _(sum).sumBy(x => x.NewCases) : null
+    const TOTAL_RECOVERED = sum ? _(sum).sumBy(x => x.Recovered) : null
+    const TOTAL_DEATHS = sum ? _(sum).sumBy(x => x.NewDeaths) : null
 
     const summary = [
         {
             title: 'Total cases',
-            total: data?.TotalCases?.toLocaleString() ?? 'NA',
+            total: TOTAL_CASES?.toLocaleString() ?? 'NA',
             type: CONSTANTS.TYPE.CONFIRMED
         },
         {
             title: 'Recovered',
-            total: data?.Recovered?.toLocaleString() ?? 'NA',
+            total: TOTAL_RECOVERED?.toLocaleString() ?? 'NA',
             type: CONSTANTS.TYPE.RECOVERED
         },
         {
             title: 'Deaths',
-            total: data?.TotalDeaths?.toLocaleString() ?? 'NA',
+            total: TOTAL_DEATHS?.toLocaleString() ?? 'NA',
             type: CONSTANTS.TYPE.DEATHS
         },
     ]
