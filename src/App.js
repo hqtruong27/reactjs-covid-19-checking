@@ -1,13 +1,16 @@
+import { Backdrop, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
-import CoronaAPI from "./components/api/corona-api";
 import { Country } from "./components/countries/country";
 import { Highlight } from "./components/highlight/highlight";
-import Summary from "./components/summary/summary";
 import { COUNTRIES } from './global/constants'
+
+import Summary from "./components/summary/summary";
+import CoronaAPI from "./components/api/corona-api";
 
 function App() {
 
   const [open, setOpen] = useState(false);
+  const [loadingBackDrop, setLoadingBackDrop] = useState(false);
   const [countries, setCountries] = useState([])
   const [params, setParams] = useState({ Country: null, Slug: null, from: null })
   const [report, setReport] = useState([])
@@ -20,7 +23,6 @@ function App() {
 
   useEffect(() => {
     if (!loading) return
-
     setTimeout(() => {
       CoronaAPI.countries().then((res) => {
         setCountries(res.data)
@@ -46,16 +48,26 @@ function App() {
 
   useEffect(() => {
     if (params?.Slug) {
+      setLoadingBackDrop(true)
       CoronaAPI.getReportPremiumByCountry(params.Slug, params.from).then((res) => {
         const result = { type: params.from === "ALL" ? "ALL" : params.from, data: res.data }
         setReport(result)
-      }).catch((err) => console.error(err))
+        setLoadingBackDrop(false)
+      }).catch((err) => {
+        console.error(err)
+        setLoadingBackDrop(false)
+      })
 
     }
   }, [params])
 
   return (
-    <>
+    <div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingBackDrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Country
         open={open}
         onOpen={() => setOpen(true)}
@@ -66,7 +78,9 @@ function App() {
         val={params} />
       <Highlight sum={report.data} />
       <Summary onChange={handleChangeSummary} data={report} />
-    </>
+
+
+    </div>
   );
 }
 
