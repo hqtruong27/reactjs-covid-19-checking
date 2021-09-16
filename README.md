@@ -46,6 +46,9 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 7. autosuggest-highlight
 8. material-ui/lab
 9. lodash
+10. @mui/material
+11. @emotion/react
+12. @emotion/styled
 
 ## Data from
 [JHU CSSE COVID-19 Data ](https://github.com/CSSEGISandData/COVID-19)
