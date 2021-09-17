@@ -66,10 +66,9 @@ function App() {
         }).catch((err) => {
           console.log(err)
         })
+      } else {
+        setCountries(response)
       }
-
-      console.log(countries)
-      return setCountries(response)
     }).catch((err) => console.log(err))
   }, [])
 
