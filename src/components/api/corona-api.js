@@ -13,7 +13,7 @@ const CoronaAPI = {
      * get all countries
      * @returns
      */
-    countries: () => axios.get('/countries', config),
+    countries: async () => await axios.get('/countries', config),
 
     /**
      * get report by Country
@@ -28,7 +28,6 @@ const CoronaAPI = {
      * @returns
      */
     sumReportByCountry: (country) => axios.get(`/live/country/${country}/status/all/date/${moment().subtract(2, 'days').format('YYYY-MM-DD')}`, config),
-
 
     /**
      * get report by Country
