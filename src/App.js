@@ -2,7 +2,7 @@ import { Autocomplete } from "@material-ui/lab"
 import { makeStyles, TextField, InputAdornment, Grid } from "@material-ui/core"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { useEffect, useState } from "react"
-import { createBrowserHistory } from 'history'
+import { createHashHistory } from 'history'
 import { Search } from "@material-ui/icons"
 
 import { Highlight } from "./components/highlight/highlight"
@@ -39,8 +39,9 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-let currentValue;
-let history = createBrowserHistory()
+const history = createHashHistory({
+  hashType: 'slash',
+})
 
 function App() {
   const classes = useStyles()
@@ -52,39 +53,43 @@ function App() {
   const [report, setReport] = useState([])
 
   useEffect(() => {
-    setParams(COUNTRIES.VIE)
-  }, [])
-
-  useEffect(() => {
     _context.table('countries').get('cached-country').then((response) => {
-      if (response) {
+      if (!response) {
         CoronaAPI.countries().then((res) => {
-          console.log(res)
-          setCountries(res.data)
+          const data = res.data
+          setCountries(data); init(data)
           _context.table('countries').put(res.data, 'cached-country').then()
-          return;
         }).catch((err) => {
           console.log(err)
         })
       } else {
         setCountries(response)
       }
+
+      if (response)
+        init(response)
     }).catch((err) => console.log(err))
   }, [])
 
-  const handleChangeCountry = (_, value) => {
-    setParams({ Slug: value?.Slug, Country: value?.Country })
+  const init = (arr) => {
+    const search = history.location.search
+    const query = new URLSearchParams(search)
+    const slug = query.get('hl') || COUNTRIES.VIE.Slug
+    const country = arr.find(x => x.Slug === slug)
+    setParams(country)
+    setInputValue(country?.Country)
   }
 
-  const handleChangeSummary = (event) => {
-    setParams({ Slug: params?.Slug, Country: params?.Country, from: event.target.value })
-  }
+  const handleChangeCountry = (_, value) => setParams({ Slug: value?.Slug, Country: value?.Country })
+
+  const handleChangeSummary = (event) => setParams({ Slug: params?.Slug, Country: params?.Country, from: event.target.value })
 
   useEffect(() => {
     if (params?.Slug) {
       setLoadingBackDrop(true)
       CoronaAPI.getReportPremiumByCountry(params.Slug, params.from).then((res) => {
         const result = { type: params.from === "ALL" ? "ALL" : params.from, data: res.data }
+
         setReport(result)
         setLoadingBackDrop(false)
       }).catch((err) => {
@@ -109,29 +114,26 @@ function App() {
             freeSolo
             inputValue={inputValue ?? ''}
             onChange={(_, value) => {
+              console.log(value)
+              const slug = value?.Slug
+              if (slug) {
+                history.push({ search: '?hl=' + slug })
+              }
+
               setOpen(false)
               setInputValue(value?.Country)
+              handleChangeCountry(_, value)
             }}
             onFocus={(e) => {
-              setInputValue('')
-              currentValue = e.target.value
-              console.log({ targetFocus: e.target.value, valueFocus: currentValue })
+              setInputValue()
             }}
             onBlur={(e) => {
-              history.push({
-                pathname: '/home',
-                search: '?the=query'
-              })
-
-              console.log(params)
               setOpen(false)
-              setInputValue(e.target.value !== '' ? e.target.value : currentValue)
+              setInputValue(params.Country)
             }}
             onInputChange={(event) => {
-              const value = event.target.value
-
+              const value = event?.target?.value
               setOpen(value?.length > 2 ? true : false)
-              console.log(value)
               setInputValue(value)
             }}
             open={open}
