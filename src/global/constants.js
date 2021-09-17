@@ -10,7 +10,7 @@ export const CONSTANTS = {
 export const COUNTRIES = {
     VIE: {
         Country: "Viet Nam",
-        Slug: 'Vietnam'
+        Slug: 'vietnam'
     },
-    VN: 'Vietnam'
+    VN: 'vietnam'
 }
