@@ -24,18 +24,18 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 100,
     border: '1px solid #dadce0',
     boxShadow: '0 1px 5px rgb(0 0 0 / 25%)',
-    // "& .MuiOutlinedInput-notchedOutline": {
-    //   borderWidth: "1px",
-    //   borderColor: "#dadce0"
-    // },
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderWidth: "1px",
+      borderColor: "#dadce0"
+    },
     "&:hover .MuiOutlinedInput-notchedOutline": {
       borderWidth: "1px",
       borderColor: "#dadce0"
     },
-    // "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    //   borderWidth: "1px",
-    //   borderColor: "#dadce0"
-    // }
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderWidth: "1px",
+      borderColor: "#dadce0"
+    }
   }
 }))
 
