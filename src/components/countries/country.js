@@ -1,7 +1,7 @@
-import { TextField, CircularProgress, Grid } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
-import parse from 'autosuggest-highlight/parse';
-import match from 'autosuggest-highlight/match';
+import { TextField, CircularProgress, Grid } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
+import parse from 'autosuggest-highlight/parse'
+import match from 'autosuggest-highlight/match'
 import React from 'react'
 
 export const Country = ({ val, onChange, data, open, onOpen, onClose, loading }) => {

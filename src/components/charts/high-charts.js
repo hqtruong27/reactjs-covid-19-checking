@@ -1,7 +1,7 @@
+import moment from 'moment'
+import Highchart from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import React, { useEffect, useState } from 'react'
-import Highchart from 'highcharts'
-import moment from 'moment'
 import _ from 'lodash'
 import { FormControl, makeStyles, NativeSelect } from '@material-ui/core'
 

@@ -1,7 +1,7 @@
 import { Card, CardContent, Grid, Typography, makeStyles } from '@material-ui/core'
 import React from 'react'
-import { CONSTANTS } from '../../global/constants'
 import _ from 'lodash'
+import { CONSTANTS } from '../../global/constants'
 
 export const Highlight = ({ sum }) => {
     const TOTAL_CASES = sum ? _(sum).sumBy(x => x.NewCases) : null

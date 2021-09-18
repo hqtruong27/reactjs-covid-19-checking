@@ -4,7 +4,7 @@ import moment from "moment"
 let config = {
     baseURL: 'https://api.covid19api.com',
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
     }
 }
 
