@@ -130,7 +130,6 @@ const generateDataByType = (type = 'ALL', data) => {
             break
         default:
             break
-
     }
 
     return { result, categories, typeChart }
