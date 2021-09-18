@@ -1,5 +1,4 @@
 const UrlExtension = {
-
     /**
      * append more params for current url
      * @param {String} name key param

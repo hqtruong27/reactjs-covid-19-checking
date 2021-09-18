@@ -4,7 +4,6 @@ export const CONSTANTS = {
         DEATHS: 'Deaths',
         RECOVERED: 'Recovered'
     },
-
 }
 
 export const COUNTRIES = {
