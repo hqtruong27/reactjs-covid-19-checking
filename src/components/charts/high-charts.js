@@ -136,7 +136,7 @@ const generateDataByType = (type = 'ALL', data) => {
     return { result, categories, typeChart }
 }
 
-const HighChart = ({ onChange, data }) => {
+const HighChart = ({ value, onChange, data }) => {
 
     const [options, setOptions] = useState({})
 
@@ -150,6 +150,7 @@ const HighChart = ({ onChange, data }) => {
         <div>
             <FormControl className={classes.filter}>
                 <NativeSelect
+                    value={value || ''}
                     onChange={onChange}
                     className={classes.selector}>
                     <option value="ALL" >All time</option>
