@@ -2,11 +2,11 @@ import { Autocomplete } from "@material-ui/lab"
 import { makeStyles, TextField, InputAdornment, Grid } from "@material-ui/core"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { useEffect, useState } from "react"
-import { createHashHistory } from 'history'
 import { Search } from "@material-ui/icons"
 
 import { Highlight } from "./components/highlight/highlight"
 import { COUNTRIES } from './global/constants'
+import UrlExtension from './global/extension'
 import _context from './database/db-dexie'
 import Summary from "./components/summary/summary"
 import CoronaAPI from "./components/api/corona-api"
@@ -39,10 +39,6 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const history = createHashHistory({
-  hashType: 'slash',
-})
-
 function App() {
   const classes = useStyles()
   const [open, setOpen] = useState(false);
@@ -66,23 +62,31 @@ function App() {
         setCountries(response)
       }
 
-      if (response)
-        init(response)
+      if (response) init(response)
     }).catch((err) => console.log(err))
   }, [])
 
   const init = (arr) => {
-    const search = history.location.search
-    const query = new URLSearchParams(search)
-    const slug = query.get('hl') || COUNTRIES.VIE.Slug
-    const country = arr.find(x => x.Slug === slug)
-    setParams(country)
-    setInputValue(country?.Country)
+    const { hl, sum } = UrlExtension.find(['hl', 'sum'])
+    const _slug = hl ?? COUNTRIES.VIE.Slug
+
+    const result = arr.find(x => x.Slug === _slug)
+    setParams({ Country: result.Country, Slug: _slug, from: sum })
+    setInputValue(result?.Country)
   }
 
-  const handleChangeCountry = (_, value) => setParams({ Slug: value?.Slug, Country: value?.Country })
+  const handleChangeCountry = (_, value) => {
+    const { hl, sum } = UrlExtension.find(['hl', 'sum'])
+    const slug = hl ? hl : value?.Slug
+    setParams({ Slug: slug, Country: value?.Country, from: sum ?? undefined })
+  }
 
-  const handleChangeSummary = (event) => setParams({ Slug: params?.Slug, Country: params?.Country, from: event.target.value })
+  const handleChangeSummary = (event) => {
+    console.log(event.target?.value)
+    const from = event.target?.value
+    UrlExtension.append('sum', from)
+    setParams({ Slug: params?.Slug, Country: params?.Country, from: from })
+  }
 
   useEffect(() => {
     if (params?.Slug) {
@@ -96,7 +100,6 @@ function App() {
         console.error(err)
         setLoadingBackDrop(false)
       })
-
     }
   }, [params])
 
@@ -114,11 +117,8 @@ function App() {
             freeSolo
             inputValue={inputValue ?? ''}
             onChange={(_, value) => {
-              console.log(value)
               const slug = value?.Slug
-              if (slug) {
-                history.push({ search: '?hl=' + slug })
-              }
+              if (slug) UrlExtension.append('hl', slug)
 
               setOpen(false)
               setInputValue(value?.Country)
@@ -142,7 +142,7 @@ function App() {
             renderInput={(params) =>
               <TextField
                 {...params}
-                label="Select a location"
+                placeholder="Select a location"
                 variant="outlined"
                 fullWidth
                 InputProps={{
@@ -168,7 +168,7 @@ function App() {
         onChange={handleChangeCountry}
         val={params} /> */}
       <Highlight sum={report.data} />
-      <Summary onChange={handleChangeSummary} data={report} />
+      <Summary value={params?.from} onChange={handleChangeSummary} data={report} />
 
       {/* --backdrop loading-- */}
       <Backdrop
