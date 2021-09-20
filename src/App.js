@@ -10,6 +10,7 @@ import UrlExtension from './global/extension'
 import _context from './database/db-dexie'
 import Summary from "./components/summary/summary"
 import CoronaAPI from "./components/api/corona-api"
+import IP from './components/api/ip-lookup'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -67,12 +68,14 @@ function App() {
   }, [])
 
   const init = (arr) => {
+    let code
     const { hl, sum } = UrlExtension.find(['hl', 'sum'])
-    const _slug = hl ?? COUNTRIES.VIE.Slug
-
-    const result = arr.find(x => x.Slug === _slug)
-    setParams({ Country: result.Country, Slug: _slug, from: sum })
-    setInputValue(result?.Country)
+    IP.lookup().then(res => {
+      if (!hl) code = res.data?.country_code
+      const result = arr.find(x => (code !== undefined && x.ISO2 === code) || x.Slug === (hl ?? COUNTRIES.VIE.Slug))
+      setParams({ Country: result.Country, Slug: result.Slug, from: sum })
+      setInputValue(result?.Country)
+    })
   }
 
   const handleChangeCountry = (_, value) => {
