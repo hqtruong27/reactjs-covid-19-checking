@@ -6,6 +6,9 @@
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/hqtruong27/reactjs-covid-19-checking?label=Last%20commit&logo=git&style=flat-square">
 </p>
 
+### Demo
+https://covid19checking.com
+
 In the project directory, you can run:
 
 ### `yarn start`
