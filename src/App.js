@@ -41,9 +41,9 @@ const useStyles = makeStyles(theme => ({
 
 function App() {
   const classes = useStyles()
-  const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [loadingBackDrop, setLoadingBackDrop] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [inputValue, setInputValue] = useState('')
+  const [loadingBackDrop, setLoadingBackDrop] = useState(false)
   const [countries, setCountries] = useState([])
   const [params, setParams] = useState({ Country: null, Slug: null, from: null })
   const [report, setReport] = useState([])
@@ -82,7 +82,6 @@ function App() {
   }
 
   const handleChangeSummary = (event) => {
-    console.log(event.target?.value)
     const from = event.target?.value
     UrlExtension.append('sum', from)
     setParams({ Slug: params?.Slug, Country: params?.Country, from: from })
@@ -92,7 +91,7 @@ function App() {
     if (params?.Slug) {
       setLoadingBackDrop(true)
       CoronaAPI.getReportPremiumByCountry(params.Slug, params.from).then((res) => {
-        const result = { type: params.from === "ALL" ? "ALL" : params.from, data: res.data }
+        const result = { type: params.from, data: res.data }
 
         setReport(result)
         setLoadingBackDrop(false)
@@ -177,7 +176,7 @@ function App() {
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
