@@ -11,17 +11,17 @@ export const Highlight = ({ sum }) => {
     const summary = [
         {
             title: 'Total cases',
-            total: TOTAL_CASES?.toLocaleString() ?? 'NA',
+            total: TOTAL_CASES?.toLocaleString() ?? 'No data',
             type: CONSTANTS.TYPE.CONFIRMED
         },
         {
             title: 'Recovered',
-            total: TOTAL_RECOVERED?.toLocaleString() ?? 'NA',
+            total: TOTAL_RECOVERED?.toLocaleString() ?? 'No data',
             type: CONSTANTS.TYPE.RECOVERED
         },
         {
             title: 'Deaths',
-            total: TOTAL_DEATHS?.toLocaleString() ?? 'NA',
+            total: TOTAL_DEATHS?.toLocaleString() ?? 'No data',
             type: CONSTANTS.TYPE.DEATHS
         },
     ]
@@ -57,7 +57,7 @@ const styles = makeStyles({
             case CONSTANTS.TYPE.DEATHS:
                 return { borderLeft: '6px solid #4A4A4A' }
             default:
-                return { borderLeft: '6px solid #4A4A4A' };
+                return { borderLeft: '6px solid #4A4A4A' }
         }
     },
     title: {
