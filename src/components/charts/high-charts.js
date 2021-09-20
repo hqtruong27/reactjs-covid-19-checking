@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
             width: 136
         },
     }
-}));
+}))
 
 //Run when data HighChart changes
 const generateOptions = (type, data, country) => {
@@ -90,20 +90,9 @@ const generateOptions = (type, data, country) => {
         }
     }
 }
-const generateDataByType = (type = 'ALL', data) => {
-    let result, categories, typeChart
+const generateDataByType = (type = 'all', data) => {
+    let result, categories, typeChart = 'area'
     switch (type) {
-        case "ALL":
-            result = _(data)
-                .groupBy(x => moment(x.Date).format('MM/YYYY'))
-                .map((value, key) => ({
-                    key: key,
-                    data: value, NewCases: _(value).sumBy(x => x.NewCases)
-                }))
-                .value().sort(() => { const ASC = 1; return ASC })
-            categories = result.map(({ key }) => key)
-            typeChart = 'area'
-            break
         case "7":
             result = data.map(item => ({
                 Date: moment(item.Date).format('DD/MM/YYYY'),
@@ -129,6 +118,14 @@ const generateDataByType = (type = 'ALL', data) => {
             typeChart = 'column'
             break
         default:
+            result = _(data)
+                .groupBy(x => moment(x.Date).format('MM/YYYY'))
+                .map((value, key) => ({
+                    key: key,
+                    data: value, NewCases: _(value).sumBy(x => x.NewCases)
+                }))
+                .value().sort(() => { const ASC = 1; return ASC })
+            categories = result.map(({ key }) => key)
             break
     }
 
@@ -152,7 +149,7 @@ const HighChart = ({ value, onChange, data }) => {
                     value={value || ''}
                     onChange={onChange}
                     className={classes.selector}>
-                    <option value="ALL" >All time</option>
+                    <option value="all" >All time</option>
                     <option value={7}>Last 7 Days</option>
                     <option value={14}>Last 14 Days</option>
                     <option value={30}>Last 30 Days</option>
