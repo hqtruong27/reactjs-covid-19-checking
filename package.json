@@ -16,7 +16,7 @@
     "@testing-library/user-event": "^12.1.10",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.21.4",
-    "browserslist": "^4.17.0",
+    "browserslist": "^4.17.1",
     "dexie": "^3.0.3",
     "highcharts": "^9.2.2",
     "highcharts-react-official": "^3.0.0",
