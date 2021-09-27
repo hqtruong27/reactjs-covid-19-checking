@@ -1,7 +1,7 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
 
-let config = {
+const config = {
     baseURL: 'https://api.covid19api.com',
     headers: {
         'Content-Type': 'application/json'
