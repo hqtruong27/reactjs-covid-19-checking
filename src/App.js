@@ -1,10 +1,10 @@
-import { Autocomplete } from "@material-ui/lab"
-import { makeStyles, TextField, InputAdornment, Grid } from "@material-ui/core"
-import { Backdrop, CircularProgress } from "@mui/material"
+import { TextField, InputAdornment, Grid, makeStyles } from '@material-ui/core'
+import { Backdrop, CircularProgress } from '@mui/material'
+import { Autocomplete } from '@material-ui/lab'
 import { useEffect, useState } from "react"
 import { Search } from "@material-ui/icons"
 
-import { Highlight } from "./components/highlight/highlight"
+import { Highlight } from './components/highlight/highlight'
 import { COUNTRIES } from './global/constants'
 import UrlExtension from './global/extension'
 import _context from './database/db-dexie'

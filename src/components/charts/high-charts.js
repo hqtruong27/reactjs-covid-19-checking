@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import Highchart from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import React, { useEffect, useState } from 'react'
@@ -95,7 +95,7 @@ const generateDataByType = (type = 'all', data) => {
     switch (type) {
         case "7":
             result = data.map(item => ({
-                Date: moment(item.Date).format('DD/MM/YYYY'),
+                Date: dayjs(item.Date).format('DD/MM/YYYY'),
                 NewCases: item.NewCases
             })).sort(() => { const ASC = 1; return ASC })
             categories = result.map(({ Date }) => Date)
@@ -103,7 +103,7 @@ const generateDataByType = (type = 'all', data) => {
             break
         case "14":
             result = data.map(item => ({
-                Date: moment(item.Date).format('DD/MM/YYYY'),
+                Date: dayjs(item.Date).format('DD/MM/YYYY'),
                 NewCases: item.NewCases
             })).sort(() => { const ASC = 1; return ASC })
             categories = result.map(({ Date }) => Date)
@@ -111,7 +111,7 @@ const generateDataByType = (type = 'all', data) => {
             break
         case "30":
             result = data.map(item => ({
-                Date: moment(item.Date).format('DD/MM/YYYY'),
+                Date: dayjs(item.Date).format('DD/MM/YYYY'),
                 NewCases: item.NewCases
             })).sort(() => { const ASC = 1; return ASC })
             categories = result.map(({ Date }) => Date)
@@ -119,7 +119,7 @@ const generateDataByType = (type = 'all', data) => {
             break
         default:
             result = _(data)
-                .groupBy(x => moment(x.Date).format('MM/YYYY'))
+                .groupBy(x => dayjs(x.Date).format('MM/YYYY'))
                 .map((value, key) => ({
                     key: key,
                     data: value, NewCases: _(value).sumBy(x => x.NewCases)

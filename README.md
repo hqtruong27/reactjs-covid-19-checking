@@ -49,7 +49,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 1. axios
 2. highcharts
 3. highcharts-react-official
-4. moment
+4. dayjs
 5. @highcharts/map-collection
 6. @material-ui/core
 7. autosuggest-highlight

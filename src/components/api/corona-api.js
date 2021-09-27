@@ -1,5 +1,5 @@
-import axios from "axios"
-import moment from "moment"
+import axios from 'axios'
+import dayjs from 'dayjs'
 
 let config = {
     baseURL: 'https://api.covid19api.com',
@@ -27,7 +27,7 @@ const CoronaAPI = {
      * @param {*} country slug country
      * @returns
      */
-    sumReportByCountry: (country) => axios.get(`/live/country/${country}/status/all/date/${moment().subtract(2, 'days').format('YYYY-MM-DD')}`, config),
+    sumReportByCountry: (country) => axios.get(`/live/country/${country}/status/all/date/${dayjs().subtract(2, 'day').format('YYYY-MM-DD')}`, config),
 
     /**
      * get report by Country
@@ -40,8 +40,8 @@ const CoronaAPI = {
         config.headers['X-Access-Token'] = '2f0d9db1-1d6c-4813-ac99-c19a8b6aedab'
 
         let url = `/premium/country/${country}`
-            + (from ? `?from=${moment().subtract((parseInt(from) + 1), 'days').format('YYYY-MM-DD')}` + (to ? `&to=${to}`
-                : `&to=${moment().subtract(1, 'days').format('YYYY-MM-DD')}`) : (to ? `?to=${to}` : ''))
+            + (from ? `?from=${dayjs().subtract((parseInt(from) + 1), 'day').format('YYYY-MM-DD')}` + (to ? `&to=${to}`
+                : `&to=${dayjs().subtract(1, 'days').format('YYYY-MM-DD')}`) : (to ? `?to=${to}` : ''))
 
         return axios.get(url, config)
     }

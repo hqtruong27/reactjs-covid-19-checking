@@ -1,13 +1,13 @@
-import axios from "axios"
+import axios from 'axios'
 
 const IP = {
-    lookup: () => {
-        const config = {
-            baseURL: 'https://geolocation-db.com/'
-        }
+ lookup: () => {
+  const config = {
+   baseURL: 'https://geolocation-db.com/',
+  }
 
-        return axios.get('json/', config)
-    }
+  return axios.get('json/', config)
+ },
 }
 
 export default IP
