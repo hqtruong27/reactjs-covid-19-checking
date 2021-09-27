@@ -50,32 +50,35 @@ function App() {
   const [report, setReport] = useState([])
 
   useEffect(() => {
-    _context.table('countries').get('cached-country').then((response) => {
+    _context.table('countries').get('cached-country').then(async (response) => {
       if (!response) {
-        CoronaAPI.countries().then((res) => {
+        const res = await CoronaAPI.countries()
+        if (res.status === 200) {
           const data = res.data
-          setCountries(data); init(data)
-          _context.table('countries').put(res.data, 'cached-country').then()
-        }).catch((err) => {
-          console.log(err)
-        })
+          setCountries(data)
+          await Promise.all([init(data), _context.table('countries').put(data, 'cached-country')])
+        }
       } else {
         setCountries(response)
+        await init(response)
       }
-
-      if (response) init(response)
     }).catch((err) => console.log(err))
   }, [])
 
-  const init = (arr) => {
+  const init = async (arr) => {
     let code
     const { hl, sum } = UrlExtension.find(['hl', 'sum'])
-    IP.lookup().then(res => {
-      if (!hl) code = res.data?.country_code
-      const result = arr.find(x => (code !== undefined && x.ISO2 === code) || x.Slug === (hl ?? COUNTRIES.VIE.Slug))
-      setParams({ Country: result.Country, Slug: result.Slug, from: sum })
-      setInputValue(result?.Country)
-    })
+
+    if (!hl) {
+      const response = await IP.lookup()
+      if (response) {
+        code = response.data?.country_code?.toLowerCase()
+      }
+    } else code = hl.toLowerCase()
+
+    const result = arr.find(x => x.Slug.toLowerCase() === code || x.ISO2.toLowerCase() === (code ?? COUNTRIES.VIE.Code))
+    setParams({ Country: result.Country, Slug: result.Slug, from: sum })
+    setInputValue(result?.Country)
   }
 
   const handleChangeCountry = (_, value) => {
