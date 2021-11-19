@@ -2,7 +2,8 @@ export const CONSTANTS = {
     TYPE: {
         CONFIRMED: 'Confirmed',
         DEATHS: 'Deaths',
-        RECOVERED: 'Recovered'
+        RECOVERED: 'Recovered',
+        NEW_CASES: 'NewsCase',
     },
 }
 
