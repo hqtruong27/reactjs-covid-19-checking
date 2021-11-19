@@ -1,6 +1,6 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
-import countriesFile from '../../global/countries.json'
+import countriesData from '../../global/countries.json'
 
 const utm_source = 'covid19checking.com'
 
@@ -34,9 +34,9 @@ const CoronaAPI = {
      * get all countries
      * @returns
      */
-    countries: async () => await axios.get('/countries', config),
+    countriesAsync: async () => await axios.get('/countries', config),
 
-    countriesAsync: () => countriesFile,
+    countries: () => countriesData,
     /**
      * get report by Country
      * @param {*} country Slug country
