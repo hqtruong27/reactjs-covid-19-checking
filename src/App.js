@@ -5,12 +5,9 @@ import { useEffect, useState } from "react"
 import { Search } from "@material-ui/icons"
 
 import { Highlight } from './components/highlight/highlight'
-import { COUNTRIES } from './global/constants'
 import UrlExtension from './global/extension'
-import _context from './database/db-dexie'
 import Summary from "./components/summary/summary"
 import CoronaAPI from "./components/api/corona-api"
-import data1  from './global/countries.json'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,35 +48,37 @@ function App() {
   const [summary, setSummary] = useState({})
 
   useEffect(() => {
-    _context.table('countries').get('cached-country').then(async (response) => {
-      if (!response) {
-        const res = await CoronaAPI.countries()
-        if (res.status === 200) {
-          const data = res.data
-          setCountries(data)
-          await Promise.all([init(data), _context.table('countries').put(data, 'cached-country')])
-        }
-      } else {
-        debugger
-        setCountries(response)
-        await init(response)
+    const dataCountries = CoronaAPI.countries()
+    setCountries(dataCountries)
+
+    CoronaAPI.summaryTotalAsync().then((response) => {
+      if (response) {
+        const { result = {}, data } = response
+        Object.keys(data).filter(key => !key.includes('OWID_')).map(key => result[key] = data[key])
+        const { hl } = UrlExtension.find(['hl'])
+        const summary = hl && result.hasOwnProperty(hl) ? { [hl]: result[hl] } : result
+        setSummary(summary)
       }
-    }).catch((err) => console.log(err))
+    })
+
+    // _context.table('countries').get('cached-country').then(async (response) => {
+    //   if (!response) {
+    //     const res = await CoronaAPI.countriesAsync()
+    //     if (res.status === 200) {
+    //       const data = res.data
+    //       setCountries(data)
+    //       await Promise.all([init(data), _context.table('countries').put(data, 'cached-country')])
+    //     }
+    //   } else {
+    //     setCountries(response)
+    //     await init(response)
+    //   }
+    // }).catch((err) => console.log(err))
   }, [])
-
-  const init = async (arr) => {
-    const summary = await CoronaAPI.summaryTotalAsync()
-    console.log(data1)
-    if (summary) {
-      const { hl, sum } = UrlExtension.find(['hl', 'sum'])
-
-    }
-  }
 
   const handleChangeCountry = (_, value) => {
     const { hl, sum } = UrlExtension.find(['hl', 'sum'])
-    const slug = hl ? hl : value?.Slug
-    setParams({ Slug: slug, Country: value?.Country, ISO2: value?.ISO2, from: sum ?? undefined })
+    setParams({ Country: value?.name.common, ISO2: value?.cca3, from: sum ?? undefined })
   }
 
   const handleChangeSummary = (event) => {
@@ -116,10 +115,10 @@ function App() {
               classes={{ inputRoot: classes.inputRoot }}
               inputValue={inputValue ?? ''}
               onChange={(_, value) => {
-                const slug = value?.Slug
-                if (slug) UrlExtension.append('hl', slug)
+                const cca3 = value?.cca3
+                if (cca3) UrlExtension.append('hl', cca3)
                 setOpen(false)
-                setInputValue(value?.Country)
+                setInputValue(value?.name.common)
                 handleChangeCountry(_, value)
               }}
               onFocus={(e) => {
@@ -136,8 +135,8 @@ function App() {
               }}
               open={open}
               options={countries}
-              getOptionLabel={(option) => option.Country || ''}
-              getOptionSelected={(option, value) => option.ISO2 === value.ISO2}
+              getOptionLabel={(option) => option.name.common || ''}
+              getOptionSelected={(option, value) => option.cca3 === value.cca3}
               renderInput={(params) =>
                 <TextField
                   {...params}
