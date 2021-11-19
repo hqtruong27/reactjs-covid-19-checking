@@ -55,7 +55,7 @@ const UrlExtension = {
         }
 
         return result
-    }
+    },
 }
 
 export default UrlExtension;
