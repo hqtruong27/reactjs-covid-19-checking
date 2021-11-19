@@ -2,19 +2,29 @@ import { /*Card, CardContent,*/ Typography, makeStyles } from '@material-ui/core
 import React from 'react'
 import { CONSTANTS } from '../../global/constants'
 import { Grid } from '@mui/material'
-import _ from 'lodash'
 
 export const Highlight = ({ data }) => {
-    const TOTAL_CASES = data ? data?.sum?.cases : null
-    const TOTAL_RECOVERED = data ? data?.sum?.todayCases : null
-    const TOTAL_DEATHS = data ? data?.sum?.deaths : null
-    const COUNTRY_NAME = data && data?.sum?.country ? data?.sum?.country : 'Worldwide'
+    let TOTAL_CASES = 0,
+        TOTAL_DEATHS = 0,
+        NEW_CASES = 0,
+        TOTAL_DOES_GIVEN = 0,
+        NEW_DOES_GIVEN = 0,
+        PEOPLE_FULLY_VACCINATED = 0
 
-    const dataVaccines = data?.vaccine
-    const TOTAL_DOES_GIVEN = dataVaccines ? _(dataVaccines).sumBy(x => x.timeline[0].total) ?? null : null
-    const NEW_DOES_GIVEN = dataVaccines ? _(dataVaccines).sumBy(x => x.timeline[0].daily) ?? null : null
-    console.log(TOTAL_DOES_GIVEN)
-    console.log(NEW_DOES_GIVEN)
+    for (const key in data) {
+        if (Object.hasOwnProperty.call(data, key)) {
+            const element = data[key]
+            TOTAL_CASES += element.total_cases
+            TOTAL_DEATHS += element.total_deaths
+            NEW_CASES += element.new_cases
+            TOTAL_DOES_GIVEN += element.total_vaccinations
+            NEW_DOES_GIVEN += element.new_vaccinations
+            PEOPLE_FULLY_VACCINATED += element.people_fully_vaccinated
+        }
+    }
+
+    const COUNTRY_NAME = Object.keys(data).length > 1 ? 'Worldwide' : Object.values(data)[0]?.location
+
     const summary = [
         {
             title: 'Total cases',
@@ -22,9 +32,9 @@ export const Highlight = ({ data }) => {
             type: CONSTANTS.TYPE.CONFIRMED
         },
         {
-            title: 'New cases (to day)',
-            total: TOTAL_RECOVERED?.toLocaleString() ?? 'No data',
-            type: CONSTANTS.TYPE.RECOVERED
+            title: 'New cases (2 days)',
+            total: NEW_CASES?.toLocaleString() ?? 'No data',
+            type: CONSTANTS.TYPE.NEW_CASES,
         },
         {
             title: 'Deaths',
@@ -41,15 +51,16 @@ export const Highlight = ({ data }) => {
         },
         {
             title: 'New doses given (2 days)',
-            total: NEW_DOES_GIVEN?.toLocaleString() ?? 'No data',
-            type: ''
+            total: `+ ${NEW_DOES_GIVEN?.toLocaleString()}`  ?? 'No data',
+            type: 'NEW_DOES_GIVEN'
         },
         {
             title: 'People fully vaccinated',
-            total: TOTAL_DOES_GIVEN?.toLocaleString() ?? 'No data',
+            total: PEOPLE_FULLY_VACCINATED?.toLocaleString() ?? 'No data',
             type: ''
         }
     ]
+
     const classes = styles()
     return (
         <Grid>
@@ -58,7 +69,7 @@ export const Highlight = ({ data }) => {
                 <Grid container justifyContent="center">
                     {summary.map((item, index) => (
                         <Grid key={index} item sm={4} xs={4} >
-                            <Typography className={classes.card__content} component='div'>
+                            <Typography className={`${classes.card__content} ${(item.type === CONSTANTS.TYPE.NEW_CASES ? classes.card__block : '')}`} component='div'>
                                 <p className={classes.card__title}>{item.title}</p>
                                 <p className={classes.card__body}>{item.total}</p>
                             </Typography>
@@ -67,26 +78,20 @@ export const Highlight = ({ data }) => {
                 </Grid>
                 <Grid container justifyContent="center">
                     <Grid item sm={12} xs={12} className={classes.segmentation}></Grid>
-                    <Grid item sm={4} xs={4} >
-                        <Typography className={classes.card__content} component='div'>
-                            <p className={classes.card__title}>Total doses given</p>
-                            <p className={classes.card__body}>6,244,182,886</p>
-                        </Typography>
-                    </Grid>
-                    <Grid item sm={4} xs={4} >
-                        <Typography className={`${classes.card__content} ${classes.card__block}`} component='div'>
-                            <p className={classes.card__title}>New doses given (14 days)</p>
-                            <p className={classes.card__body}>Sep 16–29: +407,621,891</p>
-                        </Typography>
-                    </Grid>
-                    <Grid item sm={4} xs={4} >
-                        <Typography className={classes.card__content} component='div'>
-                            <p className={classes.card__title}>People fully vaccinated</p>
-                            <p className={classes.card__body}>2,641,268,701</p>
-                        </Typography>
-                    </Grid>
-                </Grid>
+                    {vaccines.map((item, index) => (
+                        <Grid key={index} item sm={4} xs={4} >
+                            <Typography className={`${classes.card__content} ${(item.type === 'NEW_DOES_GIVEN' ? classes.card__block : '')}`} component='div'>
+                                <p className={classes.card__title}>{item.title}</p>
+                                <p className={classes.card__body}>{item.total}</p>
+                            </Typography>
+                        </Grid>
+                    ))}
 
+                </Grid>
+                <Grid container justifyContent="left">
+                    <div className={classes.card_footer}>"Total doses given" shows the number of vaccine doses given to people. Since some vaccines require more than 1 dose, the number of fully vaccinated people is likely lower. "People fully vaccinated" shows how many people have received the full amount of doses for the COVID-19 vaccine.
+                    </div>
+                </Grid>
             </Grid>
             {/* <Grid container spacing={3} justifyContent="center">
                 {summary.map(item => <HighlightCardContent key={item.type} type={item.type} title={item.title} total={item.total} />)}
@@ -183,5 +188,16 @@ const styles = makeStyles((theme) => ({
     segmentation: {
         borderTop: '1px solid #dadce0',
         maxWidth: '98% !important',
+    },
+    card_footer: {
+        fontSize: '0.85rem',
+        marginBottom: '12px',
+        lineHeight: 1.33,
+        color: '#5f6368',
+        paddingLeft: 5,
+        '@media(min-width: 780px)': {
+            paddingLeft: 12,
+        },
+        maxWidth: '95% !important',
     }
 }))
